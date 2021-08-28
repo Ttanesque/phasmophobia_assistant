@@ -10,7 +10,7 @@ abstract class DetailPage extends StatelessWidget {
   Container buildBackButton(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(10),
-      child: RaisedButton(
+      child: ElevatedButton(
         child: Text(i("back")),
         onPressed: () {
           Navigator.pop(context);

@@ -1,0 +1,46 @@
+import 'package:phasmophobiaassistant/models/evidences/Evidence.dart';
+
+class FreezingTemperatures implements Evidence {
+  String _name = "freezing.temperatures";
+
+  List<String> _descriptions = [
+    "freezing.temperatures.description1",
+    "freezing.temperatures.description2",
+  ];
+
+  List<String> _howItWorks = [
+    "freezing.temperatures.howitworks1",
+    "freezing.temperatures.howitworks2",
+  ];
+
+  String _ghosts = "freezing.temperatures.ghosts";
+
+  List<String> _images = [
+    "assets/freezing.temperature1.jpg",
+  ];
+
+  @override
+  List<String> descriptions() {
+    return _descriptions;
+  }
+
+  @override
+  String ghosts() {
+    return _ghosts;
+  }
+
+  @override
+  List<String> howItWorks() {
+    return _howItWorks;
+  }
+
+  @override
+  String name() {
+    return _name;
+  }
+
+  @override
+  List<String> images() {
+    return _images;
+  }
+}

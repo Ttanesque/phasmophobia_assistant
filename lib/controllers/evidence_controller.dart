@@ -1,25 +1,30 @@
 import 'package:phasmophobiaassistant/config/config.dart';
 import 'package:phasmophobiaassistant/i18n/i18n.dart';
-import 'package:phasmophobiaassistant/models/Banshee.dart';
-import 'package:phasmophobiaassistant/models/Demon.dart';
-import 'package:phasmophobiaassistant/models/EmfLevelFive.dart';
-import 'package:phasmophobiaassistant/models/Evidence.dart';
-import 'package:phasmophobiaassistant/models/Fingerprints.dart';
-import 'package:phasmophobiaassistant/models/FreezingTemperatures.dart';
-import 'package:phasmophobiaassistant/models/Ghost.dart';
-import 'package:phasmophobiaassistant/models/GhostOrb.dart';
-import 'package:phasmophobiaassistant/models/GhostWriting.dart';
-import 'package:phasmophobiaassistant/models/Jinn.dart';
-import 'package:phasmophobiaassistant/models/Mare.dart';
-import 'package:phasmophobiaassistant/models/Oni.dart';
-import 'package:phasmophobiaassistant/models/Phantom.dart';
-import 'package:phasmophobiaassistant/models/Poltergeist.dart';
-import 'package:phasmophobiaassistant/models/Revenant.dart';
-import 'package:phasmophobiaassistant/models/Shade.dart';
-import 'package:phasmophobiaassistant/models/Spirit.dart';
-import 'package:phasmophobiaassistant/models/SpiritBox.dart';
-import 'package:phasmophobiaassistant/models/Wraith.dart';
-import 'package:phasmophobiaassistant/models/Yurei.dart';
+import 'package:phasmophobiaassistant/models/ghost/Banshee.dart';
+import 'package:phasmophobiaassistant/models/ghost/Demon.dart';
+import 'package:phasmophobiaassistant/models/evidences/Dots.dart';
+import 'package:phasmophobiaassistant/models/evidences/EmfLevelFive.dart';
+import 'package:phasmophobiaassistant/models/evidences/Evidence.dart';
+import 'package:phasmophobiaassistant/models/evidences/Fingerprints.dart';
+import 'package:phasmophobiaassistant/models/evidences/FreezingTemperatures.dart';
+import 'package:phasmophobiaassistant/models/ghost/Ghost.dart';
+import 'package:phasmophobiaassistant/models/evidences/GhostOrb.dart';
+import 'package:phasmophobiaassistant/models/evidences/GhostWriting.dart';
+import 'package:phasmophobiaassistant/models/ghost/Goryo.dart';
+import 'package:phasmophobiaassistant/models/ghost/Hantu.dart';
+import 'package:phasmophobiaassistant/models/ghost/Jinn.dart';
+import 'package:phasmophobiaassistant/models/ghost/Mare.dart';
+import 'package:phasmophobiaassistant/models/ghost/Myling.dart';
+import 'package:phasmophobiaassistant/models/ghost/Oni.dart';
+import 'package:phasmophobiaassistant/models/ghost/Phantom.dart';
+import 'package:phasmophobiaassistant/models/ghost/Poltergeist.dart';
+import 'package:phasmophobiaassistant/models/ghost/Revenant.dart';
+import 'package:phasmophobiaassistant/models/ghost/Shade.dart';
+import 'package:phasmophobiaassistant/models/ghost/Spirit.dart';
+import 'package:phasmophobiaassistant/models/evidences/SpiritBox.dart';
+import 'package:phasmophobiaassistant/models/ghost/Wraith.dart';
+import 'package:phasmophobiaassistant/models/ghost/Yokai.dart';
+import 'package:phasmophobiaassistant/models/ghost/Yurei.dart';
 
 class EvidenceController {
   bool emfSelected = false;
@@ -34,6 +39,8 @@ class EvidenceController {
 
   bool spiritBoxSelected = false;
 
+  bool dotsSelected = false;
+
   bool emfDiscarded = false;
 
   bool fingerprintsDiscarded = false;
@@ -46,6 +53,8 @@ class EvidenceController {
 
   bool spiritBoxDiscarded = false;
 
+  bool dotsDiscarded = false;
+
   String emf = i("emf.level.5");
 
   String fingerprints = i("fingerprints");
@@ -57,6 +66,8 @@ class EvidenceController {
   String writing = i("ghost.writing");
 
   String spiritBox = i("spirit.box");
+
+  String dots = i("dots.projector");
 
   String spirit = i("spirit");
 
@@ -82,8 +93,16 @@ class EvidenceController {
 
   String oni = i("oni");
 
+  String yokai = i("yokai");
+
+  String hantu = i("hantu");
+
+  String goryo = i("goryo");
+
+  String myling = i("myling");
+
   String ghosts =
-      "spirit | wraith | phantom | poltergeist | banshee | jinn | mare | revenant | shade | demon | yurei | oni";
+      "spirit | wraith | phantom | poltergeist | banshee | jinn | mare | revenant | shade | demon | yurei | oni | shade | yokai | hantu | goryo | myling";
 
   bool selectEvidence(String evidence) {
     bool selected = true;
@@ -106,6 +125,9 @@ class EvidenceController {
     } else if (evidence == spiritBox && !spiritBoxDiscarded) {
       spiritBoxSelected = !spiritBoxSelected;
       spiritBoxDiscarded = false;
+    } else if (evidence == dots && !dotsDiscarded) {
+      dotsSelected = !dotsSelected;
+      dotsDiscarded = false;
     } else {
       selected = false;
     }
@@ -135,6 +157,9 @@ class EvidenceController {
       } else if (evidence == spiritBox && !spiritBoxSelected) {
         spiritBoxSelected = false;
         spiritBoxDiscarded = !spiritBoxDiscarded;
+      } else if (evidence == dots && !dotsDiscarded) {
+        dotsSelected = false;
+        dotsDiscarded = !dotsDiscarded;
       } else {
         discarded = false;
       }
@@ -172,6 +197,10 @@ class EvidenceController {
       evidences += "spirit.box ";
     }
 
+    if (dotsSelected) {
+      evidences += "dots.projector";
+    }
+
     return evidences.trim();
   }
 
@@ -202,6 +231,10 @@ class EvidenceController {
       evidences += "spirit.box ";
     }
 
+    if (dotsDiscarded) {
+      evidences += "dots.projector";
+    }
+
     return evidences.trim();
   }
 
@@ -221,12 +254,14 @@ class EvidenceController {
     map['orbSelected'] = orbSelected;
     map['writingSelected'] = writingSelected;
     map['spiritBoxSelected'] = spiritBoxSelected;
+    map['dotsSelected'] = dotsSelected;
     map['emfDiscarded'] = emfDiscarded;
     map['fingerprintsDiscarded'] = fingerprintsDiscarded;
     map['temperatureDiscarded'] = temperatureDiscarded;
     map['orbDiscarded'] = orbDiscarded;
     map['writingDiscarded'] = writingDiscarded;
     map['spiritBoxDiscarded'] = spiritBoxDiscarded;
+    map['dotsDiscarded'] = dotsDiscarded;
     saveMissionState(map);
   }
 
@@ -277,6 +312,9 @@ class EvidenceController {
         } else if (lastEvidence == "spirit.box") {
           spiritBoxSelected = true;
           spiritBoxDiscarded = false;
+        } else if (lastEvidence == "dots.projector") {
+          dotsSelected = true;
+          dotsDiscarded = false;
         }
       }
     }
@@ -334,6 +372,14 @@ class EvidenceController {
         } else {
           spiritBoxDiscarded = false;
         }
+      } else if (evidence.name() == "dots.projector") {
+        if (!possibleEvidences.contains(evidence.name())) {
+          if (!dotsSelected && !dotsDiscarded) {
+            dotsDiscarded = true;
+          }
+        } else {
+          dotsDiscarded = false;
+        }
       }
     }
   }
@@ -346,6 +392,7 @@ class EvidenceController {
       GhostOrb(),
       GhostWriting(),
       SpiritBox(),
+      DotsProjector()
     ];
   }
 
@@ -381,12 +428,16 @@ class EvidenceController {
       Shade(),
       Demon(),
       Yurei(),
-      Oni()
+      Oni(),
+      Yokai(),
+      Hantu(),
+      Goryo(),
+      Myling()
     ];
   }
 
-  List<Ghost> filterDiscardedGhosts(List<Ghost> selectedGhostsList,
-      List<String> selectedDiscardedList) {
+  List<Ghost> filterDiscardedGhosts(
+      List<Ghost> selectedGhostsList, List<String> selectedDiscardedList) {
     List<Ghost> possibleGhostsList = [];
     if (selectedGhostsList.isEmpty) {
       selectedGhostsList = getAllGhosts();
@@ -425,8 +476,8 @@ class EvidenceController {
     return ghostFound.trim();
   }
 
-  List<Ghost> filterSelectedGhosts(List<Ghost> ghostsList,
-      List<String> selectedEvidencesList) {
+  List<Ghost> filterSelectedGhosts(
+      List<Ghost> ghostsList, List<String> selectedEvidencesList) {
     List<Ghost> selectedGhostsList = [];
 
     if (selectedEvidencesList.isNotEmpty) {
@@ -464,14 +515,16 @@ class EvidenceController {
     orbSelected = false;
     writingSelected = false;
     spiritBoxSelected = false;
+    dotsSelected = false;
     emfDiscarded = emfSelected;
     fingerprintsDiscarded = fingerprintsSelected;
     temperatureDiscarded = temperatureSelected;
     orbDiscarded = orbSelected;
     writingDiscarded = writingSelected;
     spiritBoxDiscarded = spiritBoxSelected;
+    dotsDiscarded = dotsSelected;
     saveEvidences();
     ghosts =
-    "spirit | wraith | phantom | poltergeist | banshee | jinn | mare | revenant | shade | demon | yurei | oni";
+        "spirit | wraith | phantom | poltergeist | banshee | jinn | mare | revenant | shade | demon | yurei | oni | shade | yokai | hantu | goryo | myling";
   }
 }

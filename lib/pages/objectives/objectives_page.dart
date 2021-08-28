@@ -2,24 +2,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phasmophobiaassistant/config/config.dart';
 import 'package:phasmophobiaassistant/i18n/i18n.dart';
-import 'package:phasmophobiaassistant/models/CrucifixObjective.dart';
-import 'package:phasmophobiaassistant/models/DirtWater.dart';
-import 'package:phasmophobiaassistant/models/EmfReaderObjective.dart';
-import 'package:phasmophobiaassistant/models/GhostEvent.dart';
-import 'package:phasmophobiaassistant/models/GhostPhoto.dart';
-import 'package:phasmophobiaassistant/models/LowTemperature.dart';
-import 'package:phasmophobiaassistant/models/MotionSensorObjective.dart';
-import 'package:phasmophobiaassistant/models/Objective.dart';
-import 'package:phasmophobiaassistant/models/SaltFootprint.dart';
-import 'package:phasmophobiaassistant/models/SmudgeSticksObjective.dart';
+import 'package:phasmophobiaassistant/models/objectives/CrucifixObjective.dart';
+import 'package:phasmophobiaassistant/models/objectives/DirtWater.dart';
+import 'package:phasmophobiaassistant/models/objectives/EmfReaderObjective.dart';
+import 'package:phasmophobiaassistant/models/objectives/GhostEvent.dart';
+import 'package:phasmophobiaassistant/models/objectives/GhostPhoto.dart';
+import 'package:phasmophobiaassistant/models/objectives/LowTemperature.dart';
+import 'package:phasmophobiaassistant/models/objectives/MotionSensorObjective.dart';
+import 'package:phasmophobiaassistant/models/objectives/Objective.dart';
+import 'package:phasmophobiaassistant/models/objectives/SaltFootprint.dart';
+import 'package:phasmophobiaassistant/models/objectives/SmudgeSticksObjective.dart';
 import 'package:phasmophobiaassistant/pages/objective_detail/objective_detail.dart';
 import 'package:phasmophobiaassistant/widgets/timer_text.dart';
 
 enum SingingCharacter { amateur, intermediate, professional }
 
-const FIVE_MINUTES = 300000,
-    TWO_MINUTES = 120000,
-    ZERO_MINUTES = 0;
+const FIVE_MINUTES = 300000, TWO_MINUTES = 120000, ZERO_MINUTES = 0;
 
 class ObjectivesPage extends StatefulWidget {
   final Map<String, dynamic> lastStateApp;
@@ -94,10 +92,10 @@ class _ObjectivesPageState extends State<ObjectivesPage>
     _smudgeSticks = lastStateApp['smudgeSticks'] ?? false;
     _saltFootprint = lastStateApp['saltFootprint'] ?? false;
     _candle = lastStateApp['candle'] ?? false;
-    _parabolicMicrofone = lastStateApp['parabolicMicrophone'] ?? false;;
-    _scapeHunt = lastStateApp['scapeHunt'] ?? false;;
-    _smudgeSticksHunt = lastStateApp['smudgeStickHunt'] ?? false;;
-    _sanityBellow25 = lastStateApp['sanityBellow25'] ?? false;;
+    _parabolicMicrofone = lastStateApp['parabolicMicrophone'] ?? false;
+    _scapeHunt = lastStateApp['scapeHunt'] ?? false;
+    _smudgeSticksHunt = lastStateApp['smudgeStickHunt'] ?? false;
+    _sanityBellow25 = lastStateApp['sanityBellow25'] ?? false;
     _textEditingController.text = lastStateApp['ghostName'] ?? "";
     loadGhostRespond(lastStateApp);
     loadDifficult(lastStateApp);
@@ -158,7 +156,7 @@ class _ObjectivesPageState extends State<ObjectivesPage>
   Container buildClearButton() {
     return Container(
       margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
-      child: RaisedButton(
+      child: ElevatedButton(
         //isExtended: true,
         child: Text(i("clear")),
         onPressed: () {
@@ -265,7 +263,7 @@ class _ObjectivesPageState extends State<ObjectivesPage>
       time = FIVE_MINUTES;
     }
     setState(
-          () {
+      () {
         _difficult = value;
         _timerText = TimerText(_stopwatch, time);
       },
@@ -374,7 +372,7 @@ class _ObjectivesPageState extends State<ObjectivesPage>
   }
 
   void goToObjectiveDetail(String nameObjective) {
-    Objective objective = null;
+    Objective objective;
 
     if (nameObjective == _emfReaderText) {
       objective = EmfReaderObjective();
@@ -522,7 +520,7 @@ class _ObjectivesPageState extends State<ObjectivesPage>
     return AlertDialog(
       content: Text("Sorry, this content is not yet available."),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text("OK"),
           onPressed: () {
             Navigator.pop(context);

@@ -3,26 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:phasmophobiaassistant/config/config.dart';
 import 'package:phasmophobiaassistant/controllers/evidence_controller.dart';
 import 'package:phasmophobiaassistant/i18n/i18n.dart';
-import 'package:phasmophobiaassistant/models/Banshee.dart';
-import 'package:phasmophobiaassistant/models/Demon.dart';
-import 'package:phasmophobiaassistant/models/EmfLevelFive.dart';
-import 'package:phasmophobiaassistant/models/Evidence.dart';
-import 'package:phasmophobiaassistant/models/Fingerprints.dart';
-import 'package:phasmophobiaassistant/models/FreezingTemperatures.dart';
-import 'package:phasmophobiaassistant/models/Ghost.dart';
-import 'package:phasmophobiaassistant/models/GhostOrb.dart';
-import 'package:phasmophobiaassistant/models/GhostWriting.dart';
-import 'package:phasmophobiaassistant/models/Jinn.dart';
-import 'package:phasmophobiaassistant/models/Mare.dart';
-import 'package:phasmophobiaassistant/models/Oni.dart';
-import 'package:phasmophobiaassistant/models/Phantom.dart';
-import 'package:phasmophobiaassistant/models/Poltergeist.dart';
-import 'package:phasmophobiaassistant/models/Revenant.dart';
-import 'package:phasmophobiaassistant/models/Shade.dart';
-import 'package:phasmophobiaassistant/models/Spirit.dart';
-import 'package:phasmophobiaassistant/models/SpiritBox.dart';
-import 'package:phasmophobiaassistant/models/Wraith.dart';
-import 'package:phasmophobiaassistant/models/Yurei.dart';
+import 'package:phasmophobiaassistant/models/ghost/Banshee.dart';
+import 'package:phasmophobiaassistant/models/ghost/Demon.dart';
+import 'package:phasmophobiaassistant/models/evidences/EmfLevelFive.dart';
+import 'package:phasmophobiaassistant/models/evidences/Evidence.dart';
+import 'package:phasmophobiaassistant/models/evidences/Fingerprints.dart';
+import 'package:phasmophobiaassistant/models/evidences/FreezingTemperatures.dart';
+import 'package:phasmophobiaassistant/models/ghost/Ghost.dart';
+import 'package:phasmophobiaassistant/models/evidences/GhostOrb.dart';
+import 'package:phasmophobiaassistant/models/evidences/GhostWriting.dart';
+import 'package:phasmophobiaassistant/models/ghost/Goryo.dart';
+import 'package:phasmophobiaassistant/models/ghost/Hantu.dart';
+import 'package:phasmophobiaassistant/models/ghost/Jinn.dart';
+import 'package:phasmophobiaassistant/models/ghost/Mare.dart';
+import 'package:phasmophobiaassistant/models/ghost/Myling.dart';
+import 'package:phasmophobiaassistant/models/ghost/Oni.dart';
+import 'package:phasmophobiaassistant/models/ghost/Phantom.dart';
+import 'package:phasmophobiaassistant/models/ghost/Poltergeist.dart';
+import 'package:phasmophobiaassistant/models/ghost/Revenant.dart';
+import 'package:phasmophobiaassistant/models/ghost/Shade.dart';
+import 'package:phasmophobiaassistant/models/ghost/Spirit.dart';
+import 'package:phasmophobiaassistant/models/evidences/SpiritBox.dart';
+import 'package:phasmophobiaassistant/models/ghost/Wraith.dart';
+import 'package:phasmophobiaassistant/models/ghost/Yokai.dart';
+import 'package:phasmophobiaassistant/models/ghost/Yurei.dart';
 import 'package:phasmophobiaassistant/pages/evidence_detail/evidence_detail_page.dart';
 import 'package:phasmophobiaassistant/pages/ghost_detail/ghost_detail_page.dart';
 
@@ -99,6 +103,11 @@ class _EvidencesPageState extends State<EvidencesPage>
               evidenceController.spiritBox,
               evidenceController.spiritBoxSelected,
               evidenceController.spiritBoxDiscarded),
+          buildEvidenceItem(
+              Icons.light,
+              evidenceController.dots,
+              evidenceController.dotsSelected,
+              evidenceController.dotsDiscarded),
           buildEvidenceSubtitle(),
           buildGhostChipsList(),
           buildResetButton(),
@@ -110,7 +119,7 @@ class _EvidencesPageState extends State<EvidencesPage>
   Widget buildResetButton() {
     return Container(
       margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
-      child: RaisedButton(
+      child: ElevatedButton(
         child: Text(i("clear")),
         onPressed: () {
           setState(() {
@@ -298,6 +307,14 @@ class _EvidencesPageState extends State<EvidencesPage>
       ghost = Yurei();
     } else if (ghostName == evidenceController.oni) {
       ghost = Oni();
+    } else if (ghostName == evidenceController.yokai) {
+      ghost = Yokai();
+    } else if (ghostName == evidenceController.hantu) {
+      ghost = Hantu();
+    } else if (ghostName == evidenceController.goryo) {
+      ghost = Goryo();
+    } else if (ghostName == evidenceController.myling) {
+      ghost = Myling();
     }
 
     Navigator.push(
@@ -329,7 +346,7 @@ class _EvidencesPageState extends State<EvidencesPage>
   }
 
   void showSnackBar(String message, BuildContext context) {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           message,

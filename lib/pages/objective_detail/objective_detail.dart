@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:phasmophobiaassistant/i18n/i18n.dart';
-import 'package:phasmophobiaassistant/models/Objective.dart';
+import 'package:phasmophobiaassistant/models/objectives/Objective.dart';
 import 'package:phasmophobiaassistant/widgets/detail_page.dart';
 
 class ObjectiveDetail extends DetailPage {

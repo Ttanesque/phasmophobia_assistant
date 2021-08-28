@@ -29,7 +29,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
           Expanded(
             child: Container(
                 margin: EdgeInsets.all(10),
-                child: RaisedButton(
+                child: ElevatedButton(
                   child: Text(i("save")),
                   onPressed: () {
                     saveLanguage(dropdownValue.toLowerCase());
@@ -70,7 +70,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
                 });
               },
               controlAffinity:
-              ListTileControlAffinity.leading, //  <-- leading Checkbox
+                  ListTileControlAffinity.leading, //  <-- leading Checkbox
             )
           ],
         ),
@@ -104,7 +104,7 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
     return AlertDialog(
       content: Text(i("restart.app")),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: Text("OK"),
           onPressed: () {
             Navigator.pop(context);
