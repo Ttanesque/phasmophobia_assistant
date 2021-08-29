@@ -1,0 +1,64 @@
+objectives:
+  - Candle:
+      name: candle
+      images:
+        - none
+  - Crucifix:
+      name: crucifix
+      images:
+        - assets/crucifix1.jpg
+        - assets/crucifix2.jpg
+  # - DirtWater:
+  #     name: dirt.water
+  #     images:
+  #       - assets/dirt.water1.jpg
+  #       - assets/dirt.water2.jpg
+  - EmfReader:
+      name: emf.reader
+      images:
+        - assets/emf.reader1.jpg
+  - GhostEvent:
+      name: ghost.event
+      images:
+        - none
+  - GhostPhoto:
+      name: ghost.photo
+      images:
+        - none
+  # - LowTemperature:
+  #     name: below.10c.50f
+  #     images:
+  #       - assets/low.temperature1.jpg
+  #       - assets/low.temperature2.jpg
+  - MotionSensor:
+      name: motion.sensor
+      images:
+        - assets/motion.sensor1.jpg
+        - assets/motion.sensor2.jpg
+        - assets/motion.sensor3.jpg
+  - ParabolicMicrophone:
+      name: parabolic.microphone
+      images:
+        - none
+  - SaltFootprint:
+      name: salt.footprint
+      images:
+        - assets/ghost.salt1.jpg
+        - assets/ghost.salt2.jpg
+  - SanityBellow25:
+      name: sanity.bellow.25
+      images:
+        - none
+  - ScapeHunt:
+      name: scape.hunt
+      images:
+        - none
+  - SmudgeSticks:
+      name: smudge.sticks
+      images:
+        - assets/smudge.sticks1.jpg
+        - assets/smudge.sticks2.jpg
+  - SmudgeSticksHunt:
+      name: smudge.sticks.hunt
+      images:
+        - none

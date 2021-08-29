@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:phasmophobiaassistant/config/config.dart';
+import 'package:phasmophobiaassistant/controllers/objective_controller.dart';
 import 'package:phasmophobiaassistant/i18n/i18n.dart';
 import 'package:phasmophobiaassistant/models/objectives/CrucifixObjective.dart';
 import 'package:phasmophobiaassistant/models/objectives/DirtWater.dart';
@@ -39,6 +40,10 @@ class _ObjectivesPageState extends State<ObjectivesPage>
   TimerText _timerText;
 
   SingingCharacter _difficult = SingingCharacter.amateur;
+
+  List<Objective> _objectives = [];
+
+  List<bool> _objectivesStates = [];
 
   bool _emfReader = false,
       _lowTemperature = false,
@@ -79,6 +84,14 @@ class _ObjectivesPageState extends State<ObjectivesPage>
       timer = TWO_MINUTES;
     }
     _timerText = TimerText(_stopwatch, timer);
+  }
+
+  Future<void> fetchList() async {
+    var objController = ObjectiveController();
+    await objController.init();
+    _objectives = objController.objectives();
+    if (_objectivesStates.length != _objectives.length)
+      _objectivesStates = List.generate(_objectives.length, (_) => false);
   }
 
   void loadInitialValues(Map<String, dynamic> lastStateApp) {
@@ -131,15 +144,25 @@ class _ObjectivesPageState extends State<ObjectivesPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ListView(
-      children: <Widget>[
-        buildGhostNameAndRespondCard(),
-        buildObjectiveTable(),
-        buildTimerCard(),
-        buildDificultButtons(),
-        buildClearButton(),
-      ],
-    );
+    return FutureBuilder(
+        future: fetchList(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return ListView(
+              children: <Widget>[
+                buildGhostNameAndRespondCard(),
+                buildObjectiveTable(),
+                buildTimerCard(),
+                buildDificultButtons(),
+                buildClearButton(),
+              ],
+            );
+          } else {
+            return Container(
+              color: Colors.black,
+            );
+          }
+        });
   }
 
   Wrap buildDificultButtons() {
@@ -185,36 +208,46 @@ class _ObjectivesPageState extends State<ObjectivesPage>
   }
 
   Container buildObjectiveTable() {
+    List<TableRow> lines = [];
+    for (var it = 0; it < _objectives.length; it += 2) {
+      lines.add(TableRow(children: [
+        buildObjectiveItem(_objectives[it], _objectivesStates[it]),
+        buildObjectiveItem(_objectives[it + 1], _objectivesStates[it + 1])
+      ]));
+    }
     return Container(
       margin: EdgeInsets.fromLTRB(10, 5, 10, 5),
       child: Table(
-        children: [
-          TableRow(children: [
-            buildObjectiveItem(_emfReaderText, _emfReader),
-            buildObjectiveItem(_ghostEventText, _ghostEvent),
-          ]),
-          TableRow(children: [
-            buildObjectiveItem(_ghostPhotoText, _ghostPhoto),
-            buildObjectiveItem(_saltFootprintText, _saltFootprint),
-          ]),
-          TableRow(children: [
-            buildObjectiveItem(_sensorText, _motionSensor),
-            buildObjectiveItem(_crucifixText, _crucifix),
-          ]),
-          TableRow(children: [
-            buildObjectiveItem(_smudgeSticksText, _smudgeSticks),
-            buildObjectiveItem(_candleText, _candle),
-          ]),
-          TableRow(children: [
-            buildObjectiveItem(_parabolicMicrophoneText, _parabolicMicrofone),
-            buildObjectiveItem(_scapeHuntText, _scapeHunt),
-          ]),
-          TableRow(children: [
-            buildObjectiveItem(_smudgeSticksHuntText, _smudgeSticksHunt),
-            buildObjectiveItem(_sanityBellow25Text, _sanityBellow25),
-          ]),
-        ],
+        children: lines,
       ),
+      // child: Table(
+      //   children: [
+      //     TableRow(children: [
+      //       buildObjectiveItem(_emfReaderText, _emfReader),
+      //       buildObjectiveItem(_ghostEventText, _ghostEvent),
+      //     ]),
+      //     TableRow(children: [
+      //       buildObjectiveItem(_ghostPhotoText, _ghostPhoto),
+      //       buildObjectiveItem(_saltFootprintText, _saltFootprint),
+      //     ]),
+      //     TableRow(children: [
+      //       buildObjectiveItem(_sensorText, _motionSensor),
+      //       buildObjectiveItem(_crucifixText, _crucifix),
+      //     ]),
+      //     TableRow(children: [
+      //       buildObjectiveItem(_smudgeSticksText, _smudgeSticks),
+      //       buildObjectiveItem(_candleText, _candle),
+      //     ]),
+      //     TableRow(children: [
+      //       buildObjectiveItem(_parabolicMicrophoneText, _parabolicMicrofone),
+      //       buildObjectiveItem(_scapeHuntText, _scapeHunt),
+      //     ]),
+      //     TableRow(children: [
+      //       buildObjectiveItem(_smudgeSticksHuntText, _smudgeSticksHunt),
+      //       buildObjectiveItem(_sanityBellow25Text, _sanityBellow25),
+      //     ]),
+      //   ],
+      // ),
     );
   }
 
@@ -343,7 +376,7 @@ class _ObjectivesPageState extends State<ObjectivesPage>
     return text;
   }
 
-  Card buildObjectiveItem(String objective, bool selected) {
+  Card buildObjectiveItem(Objective objective, bool selected) {
     return Card(
       child: AnimatedContainer(
         decoration: BoxDecoration(
@@ -353,7 +386,7 @@ class _ObjectivesPageState extends State<ObjectivesPage>
         duration: Duration(seconds: 1),
         child: ListTile(
           dense: true,
-          title: Text(objective),
+          title: Text(i(objective.name())),
           //leading: Icon(Icons.person),
           trailing: InkWell(
             child: Icon(Icons.help_outline),
@@ -371,29 +404,7 @@ class _ObjectivesPageState extends State<ObjectivesPage>
     );
   }
 
-  void goToObjectiveDetail(String nameObjective) {
-    Objective objective;
-
-    if (nameObjective == _emfReaderText) {
-      objective = EmfReaderObjective();
-    } else if (nameObjective == _lowTemperatureText) {
-      objective = LowTemperature();
-    } else if (nameObjective == _dirtWaterText) {
-      objective = DirtWater();
-    } else if (nameObjective == _ghostPhotoText) {
-      objective = GhostPhoto();
-    } else if (nameObjective == _sensorText) {
-      objective = MotionSensorObjective();
-    } else if (nameObjective == _crucifixText) {
-      objective = CrucifixObjective();
-    } else if (nameObjective == _ghostEventText) {
-      objective = GhostEvent();
-    } else if (nameObjective == _smudgeSticksText) {
-      objective = SmudgeSticksObjective();
-    } else if (nameObjective == _saltFootprintText) {
-      objective = SaltFootprint();
-    }
-
+  void goToObjectiveDetail(Objective objective) {
     if (objective != null) {
       Navigator.push(
         context,
@@ -411,27 +422,18 @@ class _ObjectivesPageState extends State<ObjectivesPage>
   void resetButton() {
     _textEditingController.text = "";
     _selections = List.generate(2, (_) => false);
-    _emfReader = false;
-    _lowTemperature = false;
-    _dirtWater = false;
-    _ghostPhoto = false;
-    _motionSensor = false;
-    _crucifix = false;
-    _ghostEvent = false;
-    _smudgeSticks = false;
-    _saltFootprint = false;
-    _candle = false;
-    _parabolicMicrofone = false;
-    _scapeHunt = false;
-    _smudgeSticksHunt = false;
-    _sanityBellow25 = false;
+    for (var i = 0; i < _objectivesStates.length; i++) {
+      _objectivesStates[i] = false;
+    }
     _difficult = SingingCharacter.amateur;
     handleStopButton();
     saveObjectiveState();
   }
 
-  void changeObjectiveState(String objective) {
-    if (objective == _emfReaderText) {
+  void changeObjectiveState(Objective objective) {
+    var idx = _objectives.indexOf(objective);
+    _objectivesStates[idx] = _objectivesStates[idx];
+    /* if (objective == _emfReaderText) {
       _emfReader = !_emfReader;
     } else if (objective == _lowTemperatureText) {
       _lowTemperature = !_lowTemperature;
@@ -459,7 +461,7 @@ class _ObjectivesPageState extends State<ObjectivesPage>
       _smudgeSticksHunt = !_smudgeSticksHunt;
     } else if (objective == _sanityBellow25Text) {
       _sanityBellow25 = !_sanityBellow25;
-    }
+    } */
     saveObjectiveState();
   }
 
