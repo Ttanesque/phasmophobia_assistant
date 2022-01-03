@@ -1,18 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:phasmophobiaassistant/config/config.dart';
 import 'package:phasmophobiaassistant/controllers/objective_controller.dart';
 import 'package:phasmophobiaassistant/i18n/i18n.dart';
-import 'package:phasmophobiaassistant/models/objectives/CrucifixObjective.dart';
-import 'package:phasmophobiaassistant/models/objectives/DirtWater.dart';
-import 'package:phasmophobiaassistant/models/objectives/EmfReaderObjective.dart';
-import 'package:phasmophobiaassistant/models/objectives/GhostEvent.dart';
-import 'package:phasmophobiaassistant/models/objectives/GhostPhoto.dart';
-import 'package:phasmophobiaassistant/models/objectives/LowTemperature.dart';
-import 'package:phasmophobiaassistant/models/objectives/MotionSensorObjective.dart';
 import 'package:phasmophobiaassistant/models/objectives/Objective.dart';
-import 'package:phasmophobiaassistant/models/objectives/SaltFootprint.dart';
-import 'package:phasmophobiaassistant/models/objectives/SmudgeSticksObjective.dart';
 import 'package:phasmophobiaassistant/pages/objective_detail/objective_detail.dart';
 import 'package:phasmophobiaassistant/widgets/timer_text.dart';
 
@@ -43,7 +35,7 @@ class _ObjectivesPageState extends State<ObjectivesPage>
 
   List<Objective> _objectives = [];
 
-  List<bool> _objectivesStates = [];
+  Map<String, bool> _objectivesStates = {};
 
   bool _emfReader = false,
       _lowTemperature = false,
@@ -59,21 +51,6 @@ class _ObjectivesPageState extends State<ObjectivesPage>
       _scapeHunt = false,
       _smudgeSticksHunt = false,
       _sanityBellow25 = false;
-
-  String _emfReaderText = i("emf.reader"),
-      _lowTemperatureText = i("below.10c.50f"),
-      _dirtWaterText = i("dirt.water"),
-      _sensorText = i("motion.sensor"),
-      _crucifixText = i("crucifix"),
-      _ghostPhotoText = i("ghost.photo"),
-      _ghostEventText = i("ghost.event"),
-      _smudgeSticksText = i("smudge.sticks"),
-      _saltFootprintText = i("salt.footprint"),
-      _candleText = i("candle"),
-      _parabolicMicrophoneText = i("parabolic.microphone"),
-      _scapeHuntText = i("scape.hunt"),
-      _smudgeSticksHuntText = i("smudge.sticks.hunt"),
-      _sanityBellow25Text = i("sanity.bellow.25");
 
   _ObjectivesPageState(Map<String, dynamic> lastStateApp) {
     loadInitialValues(lastStateApp);
@@ -91,24 +68,11 @@ class _ObjectivesPageState extends State<ObjectivesPage>
     await objController.init();
     _objectives = objController.objectives();
     if (_objectivesStates.length != _objectives.length)
-      _objectivesStates = List.generate(_objectives.length, (_) => false);
+      _objectivesStates = Map.fromIterable(_objectives,
+          key: (e) => e.name(), value: (_) => false);
   }
 
   void loadInitialValues(Map<String, dynamic> lastStateApp) {
-    _emfReader = lastStateApp['emfReader'] ?? false;
-    _lowTemperature = lastStateApp['lowTemperature'] ?? false;
-    _dirtWater = lastStateApp['dirtWater'] ?? false;
-    _ghostPhoto = lastStateApp['ghostPhoto'] ?? false;
-    _motionSensor = lastStateApp['motionSensor'] ?? false;
-    _crucifix = lastStateApp['crucifix'] ?? false;
-    _ghostEvent = lastStateApp['ghostEvent'] ?? false;
-    _smudgeSticks = lastStateApp['smudgeSticks'] ?? false;
-    _saltFootprint = lastStateApp['saltFootprint'] ?? false;
-    _candle = lastStateApp['candle'] ?? false;
-    _parabolicMicrofone = lastStateApp['parabolicMicrophone'] ?? false;
-    _scapeHunt = lastStateApp['scapeHunt'] ?? false;
-    _smudgeSticksHunt = lastStateApp['smudgeStickHunt'] ?? false;
-    _sanityBellow25 = lastStateApp['sanityBellow25'] ?? false;
     _textEditingController.text = lastStateApp['ghostName'] ?? "";
     loadGhostRespond(lastStateApp);
     loadDifficult(lastStateApp);
@@ -422,17 +386,17 @@ class _ObjectivesPageState extends State<ObjectivesPage>
   void resetButton() {
     _textEditingController.text = "";
     _selections = List.generate(2, (_) => false);
-    for (var i = 0; i < _objectivesStates.length; i++) {
-      _objectivesStates[i] = false;
-    }
+    _objectivesStates.forEach((key, _) {
+      _objectivesStates[key] = false;
+    });
     _difficult = SingingCharacter.amateur;
     handleStopButton();
     saveObjectiveState();
   }
 
   void changeObjectiveState(Objective objective) {
-    var idx = _objectives.indexOf(objective);
-    _objectivesStates[idx] = _objectivesStates[idx];
+    var name = objective.name();
+    _objectivesStates[name] = !_objectivesStates[name];
     /* if (objective == _emfReaderText) {
       _emfReader = !_emfReader;
     } else if (objective == _lowTemperatureText) {
@@ -472,25 +436,13 @@ class _ObjectivesPageState extends State<ObjectivesPage>
     } else if (_selections[1]) {
       ghostRespond = "everyone";
     }
-    saveMissionState({
-      "emfReader": _emfReader,
-      "lowTemperature": _lowTemperature,
-      "dirtWater": _dirtWater,
-      "ghostPhoto": _ghostPhoto,
-      "motionSensor": _motionSensor,
-      "crucifix": _crucifix,
-      "ghostEvent": _ghostEvent,
-      "smudgeSticks": _smudgeSticks,
-      "saltFootprint": _saltFootprint,
-      "candle": _candle,
-      "parabolicMicrophone": _parabolicMicrofone,
-      "scapeHunt": _scapeHunt,
-      "smudgeStickHunt": _smudgeSticksHunt,
-      "sanityBellow25": _sanityBellow25,
+    var save = {
+      "objectives": _objectivesStates,
       "ghostName": _textEditingController.text,
       "ghostRespond": ghostRespond,
       "difficult": getDifficultName(_difficult),
-    });
+    };
+    saveMissionState(save);
   }
 
   void handlePlayButton() {
